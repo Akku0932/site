@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Debug - Kordexflow</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{font-family:Arial;padding:20px;background:#0D0C0A;color:#F2ECDF;}
+h1{color:#D0401D;}
+.test{background:#131109;padding:20px;margin:10px 0;border-radius:4px;}
+.success{color:#4ade80;}
+.error{color:#D0401D;}
+pre{background:#000;padding:10px;overflow:auto;}
+</style>
+</head>
+<body>
+<h1>Kordexflow Debug Panel</h1>
+
+<div class="test">
+<h2>1. Supabase Connection Test</h2>
+<button onclick="testConnection()">Test Connection</button>
+<pre id="connResult">Click button to test...</pre>
+</div>
+
+<div class="test">
+<h2>2. Form Submission Test</h2>
+<button onclick="testFormSubmit()">Test Form Submit</button>
+<pre id="formResult">Click button to test...</pre>
+</div>
+
+<div class="test">
+<h2>3. Logo Files Test</h2>
+<button onclick="testLogos()">Test Logo Loading</button>
+<pre id="logoResult">Click button to test...</pre>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://iaqsjkxrsbdjrkqzmyfs.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhcXNqa3hyc2JkanJrcXpteWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg1OTQ1MzAsImV4cCI6MjEwNDE3MDUzMH0.xUlcwbLgm_D0aJngWffiFjMMGC2MLlO41kqvFVuo2Xw';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+async function testConnection() {
+  const result = document.getElementById('connResult');
+  result.innerHTML = 'Testing connection...';
+
+  try {
+    // Try to query the demo_requests table
+    const { data, error } = await supabase
+      .from('demo_requests')
+      .select('*')
+      .limit(1);
+
+    if (error) {
+      result.innerHTML = `<span class="error">❌ Error: ${error.message}</span>\n\nDetails: ${JSON.stringify(error, null, 2)}`;
+    } else {
+      result.innerHTML = `<span class="success">✅ Connection successful!</span>\n\nTable exists and is accessible.\nRecords found: ${data.length}`;
+    }
+  } catch (err) {
+    result.innerHTML = `<span class="error">❌ Exception: ${err.message}</span>`;
+  }
+}
+
+async function testFormSubmit() {
+  const result = document.getElementById('formResult');
+  result.innerHTML = 'Testing form submission...';
+
+  const testData = {
+    name: 'Test User',
+    company: 'Test Company',
+    email: 'test@example.com',
+    phone: '123-456-7890',
+    business_type: 'Healthcare',
+    call_volume: 'lt50',
+    automation_goals: 'Testing the form submission',
+    created_at: new Date().toISOString()
+  };
+
+  try {
+    const { data, error } = await supabase
+      .from('demo_requests')
+      .insert([testData])
+      .select();
+
+    if (error) {
+      result.innerHTML = `<span class="error">❌ Error: ${error.message}</span>\n\nDetails: ${JSON.stringify(error, null, 2)}`;
+    } else {
+      result.innerHTML = `<span class="success">✅ Form submission successful!</span>\n\nInserted data: ${JSON.stringify(data, null, 2)}`;
+    }
+  } catch (err) {
+    result.innerHTML = `<span class="error">❌ Exception: ${err.message}</span>`;
+  }
+}
+
+async function testLogos() {
+  const result = document.getElementById('logoResult');
+  result.innerHTML = 'Testing logo files...';
+
+  const logos = [
+    'logo-light.svg',
+    'logo-dark.svg'
+  ];
+
+  let output = '';
+
+  for (const logo of logos) {
+    try {
+      const response = await fetch(logo);
+      if (response.ok) {
+        const size = response.headers.get('content-length');
+        output += `<span class="success">✅ ${logo}</span> - ${Math.round(size/1024)}KB\n`;
+      } else {
+        output += `<span class="error">❌ ${logo}</span> - Status: ${response.status}\n`;
+      }
+    } catch (err) {
+      output += `<span class="error">❌ ${logo}</span> - Error: ${err.message}\n`;
+    }
+  }
+
+  result.innerHTML = output;
+}
+</script>
+</body>
+</html>

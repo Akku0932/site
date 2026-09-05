@@ -1102,7 +1102,14 @@ html.reduced .hl{color:var(--red)}
 // ============ SUPABASE CONFIGURATION ============
 const SUPABASE_URL = 'https://iaqsjkxrsbdjrkqzmyfs.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhcXNqa3hyc2JkanJrcXpteWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg1OTQ1MzAsImV4cCI6MjEwNDE3MDUzMH0.xUlcwbLgm_D0aJngWffiFjMMGC2MLlO41kqvFVuo2Xw';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Wait for Supabase library to load
+let supabaseClient;
+if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} else {
+  console.error('Supabase library not loaded');
+}
 </script>
 <script>
 (function(){
@@ -1842,7 +1849,7 @@ function initForm(){
 
     try {
       // Insert into Supabase
-      const { data: result, error } = await supabase
+      const { data: result, error } = await supabaseClient
         .from('demo_requests')
         .insert([data]);
 

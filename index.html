@@ -1096,6 +1096,14 @@ html.reduced .hl{color:var(--red)}
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Flip.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ============ SUPABASE CONFIGURATION ============
+// Replace these with your actual Supabase credentials
+const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+</script>
 <script>
 (function(){
 "use strict";
@@ -1136,33 +1144,50 @@ const VIDEO_SOURCES=[
   'demo.mp4',
   'video.mp4'
 ];
-const LOGO_SOURCES=[
-  'logo.svg',              /* <-- recommended: name your logo this (48px header / 240px opening / 40px footer) */
-  'kordexflow-logo.svg',
-  'logo.png',
-  'kordexflow-logo.png'
+const LOGO_SOURCES_LIGHT=[
+  'logo-light.svg',        /* <-- light logo for dark backgrounds */
+  'logo-white.svg',
+  'logo-light.png',
+  'logo-white.png'
 ];
-let CUSTOM_LOGO=null, SKIP=false;
+const LOGO_SOURCES_DARK=[
+  'logo-dark.svg',         /* <-- dark logo for light backgrounds */
+  'logo-black.svg',
+  'logo-dark.png',
+  'logo-black.png'
+];
+let CUSTOM_LOGO_LIGHT=null, CUSTOM_LOGO_DARK=null, SKIP=false;
 
 function probeLogo(){
   return new Promise(res=>{
-    let i=0, settled=false;
-    const to=setTimeout(()=>{ if(!settled){settled=true;res(null);} },1400);
-    const done=v=>{ if(!settled){settled=true;clearTimeout(to);res(v);} };
-    (function tryNext(){
-      if(i>=LOGO_SOURCES.length){done(null);return;}
+    let lightDone=false, darkDone=false, lightImg=null, darkImg=null;
+    const to=setTimeout(()=>{ res({light:lightImg, dark:darkImg}); },1400);
+
+    // Probe light logo
+    (function tryLight(i=0){
+      if(i>=LOGO_SOURCES_LIGHT.length){lightDone=true; if(darkDone)res({light:lightImg, dark:darkImg}); return;}
       const img=new Image();
-      img.onload=()=>done(img);
-      img.onerror=()=>{ i++; tryNext(); };
-      img.src=LOGO_SOURCES[i];
+      img.onload=()=>{ lightImg=img; lightDone=true; if(darkDone){clearTimeout(to); res({light:lightImg, dark:darkImg});} };
+      img.onerror=()=>tryLight(i+1);
+      img.src=LOGO_SOURCES_LIGHT[i];
+    })();
+
+    // Probe dark logo
+    (function tryDark(i=0){
+      if(i>=LOGO_SOURCES_DARK.length){darkDone=true; if(lightDone)res({light:lightImg, dark:darkImg}); return;}
+      const img=new Image();
+      img.onload=()=>{ darkImg=img; darkDone=true; if(lightDone){clearTimeout(to); res({light:lightImg, dark:darkImg});} };
+      img.onerror=()=>tryDark(i+1);
+      img.src=LOGO_SOURCES_DARK[i];
     })();
   });
 }
 
-function t0(logo){
-  CUSTOM_LOGO=logo||null;
-  if(CUSTOM_LOGO){
-    const big=CUSTOM_LOGO.cloneNode();
+function t0(logos){
+  CUSTOM_LOGO_LIGHT=logos?.light||null;
+  CUSTOM_LOGO_DARK=logos?.dark||null;
+  if(CUSTOM_LOGO_LIGHT){
+    const big=CUSTOM_LOGO_LIGHT.cloneNode();
     big.id='logoFly'; big.alt='Kordexflow';
     $('#phK').appendChild(big);
     gsap.set('#phF',{display:'none'});
@@ -1198,7 +1223,7 @@ function intro(){
   return new Promise(res=>{
     fontsReady().then(()=>{
       const tl=gsap.timeline();
-      if(CUSTOM_LOGO){
+      if(CUSTOM_LOGO_LIGHT){
         tl.to('#logoFly',{autoAlpha:1,yPercent:0,duration:1,ease:'power4.out'},.12);
       }else{
         tl.to(K,{yPercent:0,duration:1,ease:'power4.out'},.1)
@@ -1214,15 +1239,28 @@ function intro(){
 }
 
 function flipToHero(res){
-  const logoEl=CUSTOM_LOGO?$('#logoFly'):null;
+  const logoEl=CUSTOM_LOGO_LIGHT?$('#logoFly'):null;
   const fly=[...(logoEl?[logoEl]:[K,F]),wDot,...hl];
   const state=Flip.getState(fly);
 
   if(logoEl){
     K.remove(); F.remove();
+    logoEl.id='headerLogoLight';
+    logoEl.classList.add('logo-light');
     $('#slotK').appendChild(logoEl);
+
+    // Create dark version for header (hidden initially)
+    if(CUSTOM_LOGO_DARK){
+      const darkLogo=CUSTOM_LOGO_DARK.cloneNode();
+      darkLogo.id='headerLogoDark';
+      darkLogo.classList.add('logo-dark');
+      darkLogo.style.display='none';
+      $('#slotK').appendChild(darkLogo);
+    }
+
+    // Footer logos
     const foot=$('#footLogo'); foot.innerHTML='';
-    const fc=logoEl.cloneNode(); fc.removeAttribute('id'); fc.alt='Kordexflow';
+    const fc=CUSTOM_LOGO_LIGHT.cloneNode(); fc.alt='Kordexflow';
     foot.appendChild(fc);
   }else{
     $('#slotK').appendChild(K); $('#slotF').appendChild(F);
@@ -1335,6 +1373,24 @@ function initColors(){
     $('#header').classList.toggle('on-light',on);
     $('#hud').classList.toggle('on-light',on);
     $('#progressRail').classList.toggle('on-light',on);
+
+    // Dynamic logo switching
+    if(CUSTOM_LOGO_LIGHT && CUSTOM_LOGO_DARK){
+      const lightLogo=$('#headerLogoLight');
+      const darkLogo=$('#headerLogoDark');
+      if(lightLogo && darkLogo){
+        if(on){
+          // Light background -> show dark logo
+          lightLogo.style.display='none';
+          darkLogo.style.display='block';
+        }else{
+          // Dark background -> show light logo
+          lightLogo.style.display='block';
+          darkLogo.style.display='none';
+        }
+      }
+    }
+
     if(prog!=null){
       gsap.set('#prFill',{scaleY:Math.max(.015,prog)});
       gsap.set('#prDot',{top:(prog*100)+'%'});
@@ -1755,10 +1811,10 @@ function initInteractive(){
   initDemo();
 }
 
-/* ============ BOOK FORM (mock submission — honest preview state) ============ */
+/* ============ BOOK FORM (Supabase integration) ============ */
 function initForm(){
   const form=$('#bkForm');
-  form.addEventListener('submit',e=>{
+  form.addEventListener('submit',async e=>{
     e.preventDefault();
     let ok=true;
     $$('input[required],select[required]',form).forEach(inp=>{
@@ -1767,13 +1823,44 @@ function initForm(){
       if(bad&&ok){inp.focus();ok=false;}
     });
     if(!ok)return;
+
     const btn=$('#bkSubmit'),lbl=$('span',btn);
     btn.disabled=true; lbl.textContent='Sending…';
-    /* MOCK: replace this timeout with your real endpoint (fetch POST) */
-    setTimeout(()=>{
-      form.style.display='none'; $('#bkOk').style.display='block';
+
+    // Collect form data
+    const formData = new FormData(form);
+    const data = {
+      name: formData.get('name'),
+      company: formData.get('company'),
+      email: formData.get('email'),
+      phone: formData.get('phone') || null,
+      business_type: formData.get('type'),
+      call_volume: formData.get('vol'),
+      automation_goals: formData.get('what') || null,
+      created_at: new Date().toISOString()
+    };
+
+    try {
+      // Insert into Supabase
+      const { data: result, error } = await supabase
+        .from('demo_requests')
+        .insert([data]);
+
+      if (error) throw error;
+
+      // Success - show confirmation
+      form.style.display='none';
+      $('#bkOk').style.display='block';
+      $('#bkOk h3').textContent='Request received!';
+      $('#bkOk p').textContent='Thank you! We\'ll be in touch within 24 hours to schedule your personalized demo.';
       gsap.fromTo('#bkOk',{y:24,autoAlpha:0},{y:0,autoAlpha:1,duration:.7,ease:'power3.out'});
-    },900);
+    } catch (error) {
+      // Error handling
+      console.error('Supabase error:', error);
+      btn.disabled=false;
+      lbl.textContent='Request demo';
+      alert('Sorry, there was an error submitting your request. Please try again or contact us directly at hello@kordexflow.com');
+    }
   });
   $('#bkAgain').addEventListener('click',()=>{
     form.reset(); form.style.display=''; $('#bkOk').style.display='none';

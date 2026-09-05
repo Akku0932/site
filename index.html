@@ -364,7 +364,9 @@ html.cursor-on select{cursor:default}
 #indTrig::before{content:"";width:8px;height:8px;background:var(--red)}
 
 /* ============ REVIEWS ============ */
-#reviews .rev-field{position:relative;height:85vh;margin-top:4rem}
+#reviews .rev-field{position:relative;display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2rem 0;margin:0 calc(var(--pad)*-1);padding-left:var(--pad);height:auto;scrollbar-width:none}
+#reviews .rev-field::-webkit-scrollbar{display:none}
+.rev-card{position:relative;flex:0 0 340px;scroll-snap-align:center;left:auto!important;top:auto!important;right:auto!important;bottom:auto!important}
 .rev-card{position:absolute;width:340px;padding:30px;box-shadow:0 30px 60px -30px rgba(0,0,0,.55);will-change:transform;transition:box-shadow .4s}
 .rev-card .mono{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;font-size:8.5px;gap:12px}
 .rev-card .pv{color:inherit;border:1px solid currentColor;padding:3px 7px;opacity:.55;flex:none}

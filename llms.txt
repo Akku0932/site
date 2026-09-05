@@ -1,0 +1,42 @@
+# Kordexflow
+
+> AI-powered phone receptionist that answers calls, books appointments, and captures leads 24/7.
+
+## What is Kordexflow?
+
+Kordexflow is an AI receptionist service that handles incoming calls for businesses. It answers every call, understands caller intent, books appointments directly into your calendar, and captures lead information—all while the caller is still on the line.
+
+## Key Features
+
+- **24/7 Call Answering**: Never miss a call, even after hours or during lunch breaks
+- **Appointment Booking**: Books directly into your calendar with real-time availability checking
+- **Lead Capture**: Collects and stores caller information automatically
+- **Industry-Specific Training**: Customized for your business type (healthcare, legal, real estate, home services, etc.)
+- **Bilingual Support**: Handles calls in English and Spanish
+- **Emergency Escalation**: Recognizes urgent situations and routes them appropriately
+
+## Pricing
+
+- **Setup**: $1,500 (one-time, includes 3 months maintenance)
+- **Monthly**: $250/month after initial period
+- **What's Included**: Custom deployment, phone number integration, calendar sync, CRM integration, ongoing updates
+
+## Industries We Serve
+
+- Healthcare (dental, medical practices, veterinary)
+- Legal services (law firms, legal consultations)
+- Real estate (property showings, buyer inquiries)
+- Home services (plumbing, HVAC, electrical)
+- Financial services (insurance, accounting)
+- Hospitality (hotels, restaurants)
+- Professional services (consulting, coaching)
+
+## Contact
+
+- Website: https://kordexflow.com
+- Email: hello@kordexflow.com
+- Demo: https://kordexflow.com/#book
+
+## Technology
+
+Kordexflow uses advanced natural language processing and voice AI to understand caller intent, answer questions, and take action—delivering a human-like experience without the overhead of hiring additional staff.

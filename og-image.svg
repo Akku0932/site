@@ -1,0 +1,28 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark background matching site -->
+  <rect width="1200" height="630" fill="#0A0A0A"/>
+
+  <!-- Red accent square -->
+  <rect x="100" y="180" width="80" height="80" fill="#D0401D"/>
+
+  <!-- Brand name -->
+  <text x="100" y="330" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="700" fill="#FFFFFF" letter-spacing="-0.02em">
+    Kordexflow
+  </text>
+
+  <!-- Tagline -->
+  <text x="100" y="390" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="400" fill="#999999">
+    AI Receptionist That Answers Every Call 24/7
+  </text>
+
+  <!-- Key features -->
+  <text x="100" y="460" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="400" fill="#CCCCCC">
+    ✓ Answers calls instantly
+  </text>
+  <text x="100" y="500" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="400" fill="#CCCCCC">
+    ✓ Books appointments
+  </text>
+  <text x="100" y="540" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="400" fill="#CCCCCC">
+    ✓ Captures every lead
+  </text>
+</svg>

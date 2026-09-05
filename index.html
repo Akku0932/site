@@ -81,6 +81,7 @@ html.reduced .sec, html.no-js .sec{background:var(--sec-bg)}
 #header.scrolled::after{opacity:.15}
 .logo{display:inline-flex;align-items:center;flex:none}
 .logo img{height:var(--logo-h);width:auto;display:block}
+.logo-light,.logo-dark{height:var(--logo-h);width:auto;display:block}
 .lg-slot{display:inline-block}
 .lg-slot+.lg-slot{margin-left:1px}
 .lg-w{font-family:'Archivo';font-weight:830;font-stretch:125%;font-size:19px;letter-spacing:.03em;white-space:nowrap}
@@ -1250,7 +1251,7 @@ function flipToHero(res){
 
     // Create dark version for header (hidden initially)
     if(CUSTOM_LOGO_DARK){
-      const darkLogo=CUSTOM_LOGO_DARK.cloneNode();
+      const darkLogo=CUSTOM_LOGO_DARK.cloneNode(true);
       darkLogo.id='headerLogoDark';
       darkLogo.classList.add('logo-dark');
       darkLogo.style.display='none';
@@ -1259,7 +1260,7 @@ function flipToHero(res){
 
     // Footer logos
     const foot=$('#footLogo'); foot.innerHTML='';
-    const fc=CUSTOM_LOGO_LIGHT.cloneNode(); fc.alt='Kordexflow';
+    const fc=CUSTOM_LOGO_LIGHT.cloneNode(true); fc.alt='Kordexflow';
     foot.appendChild(fc);
   }else{
     $('#slotK').appendChild(K); $('#slotF').appendChild(F);

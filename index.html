@@ -611,6 +611,32 @@ html.js-ok:not(.reduced) #planPage .ln>span{transform:none}
   .pr-row .mono{grid-column:1/-1}
   .plan-totals{grid-template-columns:1fr 1fr}
 }
+@media(max-width:480px){
+  :root{--pad:4vw;--hfs:clamp(1.4rem,5vw,1.8rem)}
+  h2.display{font-size:clamp(1.8rem,7vw,2.5rem)}
+  .lede{font-size:1rem}
+  #heroHead{font-size:clamp(1.8rem,8vw,2.8rem)}
+  .btn{padding:14px 24px;font-size:13px}
+  .stage-item{padding:12px 16px;font-size:13px}
+  .cap-top h3{font-size:1.1rem}
+  .faq-q h3{font-size:1rem}
+  .pr-pill{padding:8px 16px;font-size:12px}
+  .d-input input{font-size:15px;padding:16px 20px}
+  #dMic{width:52px;height:52px}
+  .rev-card{flex:0 0 92vw;padding:20px}
+  .rev-card blockquote{font-size:1.05rem}
+  .plan-totals{grid-template-columns:1fr;gap:12px}
+  .f-grid{gap:2rem}
+  #header{height:64px}
+  :root{--hh:64px}
+}
+@media(max-width:375px){
+  :root{--pad:3.5vw}
+  .sec{padding:9vh var(--pad)}
+  .btn{padding:12px 20px;font-size:12px}
+  .rev-card{flex:0 0 94vw;padding:18px}
+  .stage-item{padding:10px 14px;font-size:12px}
+}
 @media (prefers-reduced-motion: reduce){
   .ring,.scroll-hint .sl::after,#liveDot,.d-caret,.cta-rings .orbiter{animation:none}
   .btn .fill,#siteNav a::after,.linkline::after{transition:none}

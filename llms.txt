@@ -34,7 +34,7 @@ Kordexflow is an AI receptionist service that handles incoming calls for busines
 ## Contact
 
 - Website: https://kordexflow.com
-- Email: hello@kordexflow.com
+- Email: support@kordexflow.live
 - Demo: https://kordexflow.com/#book
 
 ## Technology
